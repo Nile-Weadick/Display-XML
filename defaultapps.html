@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>  
+        <script id="AppAssoc-basic" type="text/xmldata"> 
+                <DefaultAssociations>
+                    // XML Goes here
+                </DefaultAssociations>
+        </script>
+        <script id="AppAssoc-advanced" type="text/xmldata"> 
+            <DefaultAssociations>
+                // XML Goes here
+            </DefaultAssociations>
+        </script>
+        <title>DefaultApps Alpha</title>
+        <div style="text-align: center;">
+            <h1>DefaultApps Alpha</h1>
+        </div>
+        <div style="text-align: center;">
+            <table style="margin: 0 auto">
+                <tr>
+                    <td><input type="button" value="Basic" onclick="clearBox(), basic()"></td>
+                    <td><input type="button" value="Advanced" onclick="clearBox(), advanced()"></td>
+                </tr>
+            </table>
+        </div>
+        <script>
+        function clearBox()
+        {
+            document.getElementById("data").innerHTML = "";
+        }
+
+        function createTable(table, headRow){
+            table.style = "margin: 0 auto";
+            headRow.style = "background-color: slategrey";
+
+            var selection = document.createElement("th");
+            var identifier = document.createElement("th");
+            var progid = document.createElement("th");
+            var appname = document.createElement("th");
+
+            selection.innerHTML = "Selection";
+            identifier.innerHTML = "Extention";
+            progid.innerHTML = "Program ID";
+            appname.innerHTML = "Application Name";
+
+            headRow.appendChild(selection);
+            headRow.appendChild(identifier);
+            headRow.appendChild(progid);
+            headRow.appendChild(appname);
+            table.appendChild(headRow);
+            document.getElementById("data").appendChild(table); 
+        }
+
+        function sort(xmldoc, table){
+            for (var i = 0; i <  xmldoc.getElementsByTagName("Association").length; i++) {
+                var row = document.createElement("tr");
+                if (i % 2 == 0) {
+                    row.style = "background-color: darkgrey";
+                }
+
+                var columns = new Array();
+                for (var j = 0; j < 4; j++) {
+                    columns[j] = document.createElement("td");
+                    row.appendChild(columns[j]);
+                }
+
+                // Check Box
+                var chkbox = document.createElement("input");
+                chkbox.type = "checkbox";
+                columns[0].appendChild(chkbox);
+
+                // Identifier
+                columns[1].innerHTML =  xmldoc.getElementsByTagName("Association")[i].getAttribute("Identifier");
+
+                // Program ID
+                columns[2].innerHTML =  xmldoc.getElementsByTagName("Association")[i].getAttribute("ProgId");
+
+                // Application Name
+                columns[3].innerHTML =  xmldoc.getElementsByTagName("Association")[i].getAttribute("ApplicationName");
+                table.appendChild(row);
+            }
+        }
+
+        function basic(){
+            var basicxml = document.getElementById("AppAssoc-basic").innerHTML;
+            // Create DOMParser object and use it to get an XMLDocument object
+            var parser = new DOMParser();
+            var basicxmlDoc = parser.parseFromString(basicxml, "text/xml");
+            var dataTable = document.createElement("table");
+            var headerRow = document.createElement("tr");
+
+            createTable(dataTable, headerRow);
+            sort(basicxmlDoc, dataTable);
+        }
+        function advanced(){
+            var advancedxml = document.getElementById("AppAssoc-advanced").innerHTML;
+            // Create DOMParser object and use it to get an XMLDocument object
+            var parser = new DOMParser();
+            var advancedxmldoc = parser.parseFromString(advancedxml, "text/xml");
+            var dataTable = document.createElement("table");
+            var headerRow = document.createElement("tr");
+
+            createTable(dataTable, headerRow);
+            sort(advancedxmldoc, dataTable);
+        }
+    </script>
+    </head>
+    <body style="background-color: lightgray" onload="basic()">
+        <div id="data"></div>
+    </body>
+</html>
